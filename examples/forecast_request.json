@@ -1,0 +1,15 @@
+{
+  "history": [
+    {
+      "player_id": "replace-me",
+      "match_date": "2026-07-01",
+      "total_points": 14,
+      "attack_points": 11,
+      "block_points": 2,
+      "serve_points": 1
+    }
+  ],
+  "next_date": "2026-08-20",
+  "opponent": "Italy",
+  "mc_samples": 100
+}

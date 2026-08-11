@@ -1,0 +1,10 @@
+history_steps: 4
+min_matches: 20
+epochs: 2
+batch_size: 8
+lstm_units: 8
+context_units: 4
+dense_units: 8
+dropout: 0.10
+patience: 1
+random_seed: 42

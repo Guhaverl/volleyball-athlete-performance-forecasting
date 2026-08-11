@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Environment and local configuration
+.env
+*.local.yaml
+
+# Data and models
+.cache/
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+artifacts/
+*.keras
+*.h5
+*.joblib
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/

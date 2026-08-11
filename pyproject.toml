@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "volleyball-athlete-forecasting"
+version = "0.1.0"
+description = "Athlete-specific volleyball stat forecasting with TensorFlow and Volleyball World data adapters."
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = {text = "MIT"}
+authors = [{name = "Repository Maintainers"}]
+keywords = ["volleyball", "tensorflow", "time-series", "sports-analytics", "forecasting"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "beautifulsoup4>=4.12,<5",
+  "httpx>=0.27,<1",
+  "joblib>=1.4,<2",
+  "lxml>=5,<7",
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<3",
+  "platformdirs>=4.2,<5",
+  "pydantic>=2.8,<3",
+  "pydantic-settings>=2.4,<3",
+  "PyYAML>=6,<7",
+  "rich>=13.7,<15",
+  "scikit-learn>=1.5,<2",
+  "typer>=0.12,<1",
+]
+
+[project.optional-dependencies]
+ml = ["tensorflow>=2.18,<2.22"]
+api = ["fastapi>=0.115,<1", "uvicorn[standard]>=0.30,<1"]
+dev = [
+  "mypy>=1.11,<2",
+  "pandas-stubs>=2.2,<3",
+  "pre-commit>=3.8,<5",
+  "pytest>=8.3,<10",
+  "pytest-cov>=5,<8",
+  "respx>=0.21,<1",
+  "ruff>=0.6,<1",
+  "types-PyYAML>=6,<7",
+]
+
+[project.scripts]
+volley-forecast = "volley_forecast.cli:app"
+
+[project.urls]
+Documentation = "https://github.com/your-org/volleyball-athlete-forecasting/tree/main/docs"
+Repository = "https://github.com/your-org/volleyball-athlete-forecasting"
+Issues = "https://github.com/your-org/volleyball-athlete-forecasting/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["volley_forecast"]
+omit = ["src/volley_forecast/service.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["volley_forecast"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unused_ignores = true
+plugins = ["pydantic.mypy"]
+exclude = ["tests/fixtures"]

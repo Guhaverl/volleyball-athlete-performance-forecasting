@@ -1,0 +1,50 @@
+history_steps: 5
+min_matches: 20
+include_dnp: false
+train_fraction: 0.70
+val_fraction: 0.15
+epochs: 120
+batch_size: 16
+lstm_units: 32
+context_units: 16
+dense_units: 32
+dropout: 0.20
+learning_rate: 0.001
+patience: 15
+random_seed: 42
+rolling_baseline_window: 3
+interval_lower_quantile: 0.10
+interval_upper_quantile: 0.90
+promotion_metric: mae_macro
+
+targets:
+  - total_points
+  - attack_points
+  - block_points
+  - serve_points
+
+history_features:
+  - total_points
+  - attack_points
+  - block_points
+  - serve_points
+  - attack_errors
+  - attack_attempts
+  - attack_success_pct
+  - block_errors
+  - block_rebounds
+  - serve_errors
+  - serve_attempts
+  - serve_success_pct
+  - reception_successful
+  - reception_errors
+  - reception_attempts
+  - digs
+  - set_successful
+  - days_rest
+
+context_features:
+  - days_rest
+  - season_day_sin
+  - season_day_cos
+  - opponent_prior_total_points_mean

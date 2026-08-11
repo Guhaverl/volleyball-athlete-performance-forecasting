@@ -1,0 +1,32 @@
+# Example only. Configure VW_PLAYER_STATS_URL_TEMPLATE and adapt these paths to
+# an athlete-stat JSON endpoint that you are explicitly authorized to use.
+records_path: data.matches
+profile:
+  player_name: data.player.name
+  position: data.player.position
+fields:
+  match_date: date
+  team_a: teams.home.name
+  team_b: teams.away.name
+  player_team: playerTeam.name
+  opponent: opponent.name
+  total_points: stats.points.total
+  attack_points: stats.attack.points
+  block_points: stats.block.points
+  serve_points: stats.serve.points
+  attack_errors: stats.attack.errors
+  attack_attempts: stats.attack.attempts
+  attack_success_pct: stats.attack.successPercentage
+  block_errors: stats.block.errors
+  block_rebounds: stats.block.rebounds
+  serve_errors: stats.serve.errors
+  serve_attempts: stats.serve.attempts
+  serve_success_pct: stats.serve.successPercentage
+  reception_successful: stats.reception.successful
+  reception_errors: stats.reception.errors
+  reception_attempts: stats.reception.attempts
+  digs: stats.dig.successful
+  set_successful: stats.set.successful
+  participated: participated
+constants: {}
+date_format: "%Y-%m-%d"

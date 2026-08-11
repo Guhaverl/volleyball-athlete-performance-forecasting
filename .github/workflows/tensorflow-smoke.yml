@@ -1,0 +1,23 @@
+name: tensorflow-smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  train-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[ml,dev]"
+      - run: volley-forecast generate-demo-data
+      - run: volley-forecast train --data data/sample/demo_athlete_matches.csv --model-dir artifacts/smoke --config config/model.smoke.yaml
+      - run: test -f artifacts/smoke/model.keras
+      - run: test -f artifacts/smoke/metrics.json

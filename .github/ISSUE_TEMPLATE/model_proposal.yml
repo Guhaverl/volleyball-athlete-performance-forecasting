@@ -1,0 +1,20 @@
+name: Model proposal
+description: Propose a feature, target, or model experiment
+title: "[Model]: "
+labels: [modeling]
+body:
+  - type: textarea
+    attributes:
+      label: Hypothesis
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Leakage-safe evaluation plan
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Baseline and success metric
+    validations:
+      required: true
