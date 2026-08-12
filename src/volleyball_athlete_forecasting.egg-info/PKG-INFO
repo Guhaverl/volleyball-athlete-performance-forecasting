@@ -4,9 +4,9 @@ Version: 0.1.0
 Summary: Athlete-specific volleyball stat forecasting with TensorFlow and Volleyball World data adapters.
 Author: Repository Maintainers
 License: MIT
-Project-URL: Documentation, https://github.com/your-org/volleyball-athlete-forecasting/tree/main/docs
-Project-URL: Repository, https://github.com/your-org/volleyball-athlete-forecasting
-Project-URL: Issues, https://github.com/your-org/volleyball-athlete-forecasting/issues
+Project-URL: Documentation, https://github.com/Guhaverl/volleyball-athlete-performance-forecasting/tree/main/docs
+Project-URL: Repository, https://github.com/Guhaverl/volleyball-athlete-performance-forecasting
+Project-URL: Issues, https://github.com/Guhaverl/volleyball-athlete-performance-forecasting/issues
 Keywords: volleyball,tensorflow,time-series,sports-analytics,forecasting
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Science/Research

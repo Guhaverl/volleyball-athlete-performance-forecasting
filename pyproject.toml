@@ -56,9 +56,9 @@ dev = [
 volley-forecast = "volley_forecast.cli:app"
 
 [project.urls]
-Documentation = "https://github.com/your-org/volleyball-athlete-forecasting/tree/main/docs"
-Repository = "https://github.com/your-org/volleyball-athlete-forecasting"
-Issues = "https://github.com/your-org/volleyball-athlete-forecasting/issues"
+Documentation = "https://github.com/Guhaverl/volleyball-athlete-performance-forecasting/tree/main/docs"
+Repository = "https://github.com/Guhaverl/volleyball-athlete-performance-forecasting"
+Issues = "https://github.com/Guhaverl/volleyball-athlete-performance-forecasting/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
