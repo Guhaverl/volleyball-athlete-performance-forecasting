@@ -40,7 +40,9 @@ def test_client_builds_routes_and_uses_cache(tmp_path) -> None:
 
 def test_client_rejects_bad_ranges(tmp_path) -> None:
     settings = Settings(vw_cache_dir=tmp_path, vw_request_interval_seconds=0)
-    with VolleyballWorldClient(settings, transport=httpx.MockTransport(lambda request: httpx.Response(200, json={}))) as client:
+    with VolleyballWorldClient(
+        settings, transport=httpx.MockTransport(lambda request: httpx.Response(200, json={}))
+    ) as client:
         with pytest.raises(ValueError, match="precede"):
             client.fetch_global_schedule(date(2025, 2, 1), date(2025, 1, 1))
         with pytest.raises(ValueError, match="month"):

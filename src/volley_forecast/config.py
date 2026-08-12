@@ -55,8 +55,12 @@ class AthleteSourceConfig(BaseModel):
     tournament_end: str | None = None
 
     @model_validator(mode="after")
-    def tournament_context_is_complete(self) -> "AthleteSourceConfig":
-        supplied = [self.tournament_no is not None, self.tournament_start is not None, self.tournament_end is not None]
+    def tournament_context_is_complete(self) -> AthleteSourceConfig:
+        supplied = [
+            self.tournament_no is not None,
+            self.tournament_start is not None,
+            self.tournament_end is not None,
+        ]
         if any(supplied) and not all(supplied):
             raise ValueError(
                 "tournament_no, tournament_start, and tournament_end must be supplied together"
@@ -96,7 +100,7 @@ class ModelConfig(BaseModel):
     promotion_metric: str = "mae_macro"
 
     @model_validator(mode="after")
-    def validate_fractions_and_quantiles(self) -> "ModelConfig":
+    def validate_fractions_and_quantiles(self) -> ModelConfig:
         if self.train_fraction + self.val_fraction >= 0.95:
             raise ValueError("train_fraction + val_fraction must leave at least 5% for test")
         if self.interval_lower_quantile >= self.interval_upper_quantile:

@@ -89,7 +89,7 @@ def _render_generated_model_card(
         "",
         f"- **Created:** {metadata['created_at']}",
         f"- **Athlete:** {metadata['athlete'].get('player_name') or metadata['athlete'].get('player_id')}",
-        f"- **Architecture:** compact LSTM with a next-match context branch",
+        "- **Architecture:** compact LSTM with a next-match context branch",
         f"- **Promotion status:** `{status}`",
         f"- **History window:** {metadata['model_config']['history_steps']} matches",
         f"- **Training samples:** {metadata['sample_counts']['train']}",

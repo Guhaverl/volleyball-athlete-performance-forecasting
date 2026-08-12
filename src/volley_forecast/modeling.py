@@ -54,9 +54,9 @@ def build_lstm_model(
         name="history_lstm",
     )(history_input)
 
-    context_branch = tf.keras.layers.Dense(
-        context_units, activation="relu", name="context_dense"
-    )(context_input)
+    context_branch = tf.keras.layers.Dense(context_units, activation="relu", name="context_dense")(
+        context_input
+    )
     combined = tf.keras.layers.Concatenate()([history_branch, context_branch])
     combined = tf.keras.layers.Dense(dense_units, activation="relu")(combined)
     combined = tf.keras.layers.Dropout(dropout, name="forecast_dropout")(combined)

@@ -21,7 +21,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _safe_stem(value: str) -> str:
-    return "".join(character if character.isalnum() or character in "-_" else "_" for character in value)
+    return "".join(
+        character if character.isalnum() or character in "-_" else "_" for character in value
+    )
 
 
 def _write_raw_text(raw_dir: Path, name: str, text: str) -> Path:

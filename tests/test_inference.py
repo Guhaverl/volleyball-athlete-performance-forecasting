@@ -8,7 +8,11 @@ from sklearn.preprocessing import StandardScaler
 
 from volley_forecast.features import engineer_features
 from volley_forecast.inference import ForecastEngine
-from volley_forecast.schema import DEFAULT_CONTEXT_FEATURES, DEFAULT_HISTORY_FEATURES, TARGET_COLUMNS
+from volley_forecast.schema import (
+    DEFAULT_CONTEXT_FEATURES,
+    DEFAULT_HISTORY_FEATURES,
+    TARGET_COLUMNS,
+)
 
 
 class FakeModel:

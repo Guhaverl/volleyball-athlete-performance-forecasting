@@ -14,7 +14,6 @@ from bs4 import BeautifulSoup
 from volley_forecast.exceptions import SourceAdapterError
 from volley_forecast.schema import CANONICAL_COLUMNS, NUMERIC_STAT_COLUMNS
 
-
 _TABLE_OUTPUTS: dict[str, list[str]] = {
     "scoring": ["total_points", "attack_points", "block_points", "serve_points"],
     "attack": [
@@ -87,7 +86,9 @@ def _classify_table(columns: list[str]) -> str | None:
     searchable = " ".join(columns)
     if "match_date" not in columns:
         return None
-    if all(fragment in searchable for fragment in ("attack_points", "block_points", "serve_points")):
+    if all(
+        fragment in searchable for fragment in ("attack_points", "block_points", "serve_points")
+    ):
         return "scoring"
     if "rebounds" in searchable or "stuff_blocks" in searchable:
         return "block"
@@ -136,7 +137,9 @@ def _extract_profile(html: str) -> dict[str, str | None]:
     def value_after_heading(label: str) -> str | None:
         node = soup.find(
             ["h1", "h2", "h3", "h4"],
-            string=lambda value: isinstance(value, str) and value.strip().casefold() == label.casefold(),
+            string=lambda value: (
+                isinstance(value, str) and value.strip().casefold() == label.casefold()
+            ),
         )
         if node is None:
             return None
@@ -271,7 +274,11 @@ def parse_player_profile_html(
         "set_total_actions",
     ]
     activity = merged[activity_columns].fillna(0).sum(axis=1)
-    points = merged[["total_points", "attack_points", "block_points", "serve_points"]].fillna(0).sum(axis=1)
+    points = (
+        merged[["total_points", "attack_points", "block_points", "serve_points"]]
+        .fillna(0)
+        .sum(axis=1)
+    )
     merged["participated"] = (activity > 0) | (points > 0)
     merged["source_type"] = "public_player_page"
     merged["source_url"] = source_url

@@ -44,7 +44,7 @@ class VolleyballWorldClient:
             transport=transport,
         )
 
-    def __enter__(self) -> "VolleyballWorldClient":
+    def __enter__(self) -> VolleyballWorldClient:
         return self
 
     def __exit__(self, *_: object) -> None:
@@ -107,7 +107,9 @@ class VolleyballWorldClient:
     def fetch_global_schedule(self, start_date: date, end_date: date) -> dict[str, Any]:
         if end_date < start_date:
             raise ValueError("end_date cannot precede start_date")
-        return self.get_json(f"/api/v1/globalschedule/{start_date.isoformat()}/{end_date.isoformat()}")
+        return self.get_json(
+            f"/api/v1/globalschedule/{start_date.isoformat()}/{end_date.isoformat()}"
+        )
 
     def fetch_tournament(
         self, start_date: date, end_date: date, tournament_no: int

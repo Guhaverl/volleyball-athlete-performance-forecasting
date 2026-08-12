@@ -69,9 +69,7 @@ class ForecastEngine:
         context_map = build_next_context(canonical, next_date=next_date, opponent=opponent)
         missing_context = sorted(set(context_features) - set(context_map))
         if missing_context:
-            raise ValueError(
-                f"No next-match builder is defined for: {', '.join(missing_context)}"
-            )
+            raise ValueError(f"No next-match builder is defined for: {', '.join(missing_context)}")
         context_values = np.asarray(
             [[float(context_map[name]) for name in context_features]], dtype=np.float32
         )

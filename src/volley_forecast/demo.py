@@ -63,7 +63,9 @@ def generate_demo_frame(matches: int = 72, seed: int = 42) -> pd.DataFrame:
                 "serve_attempts": serve_attempts,
                 "serve_success_pct": 100.0 * serve_points / max(serve_attempts, 1),
                 "serve_total_actions": serve_attempts,
-                "reception_successful": max(0, int(round(0.58 * reception_attempts + rng.normal(0, 1)))),
+                "reception_successful": max(
+                    0, int(round(0.58 * reception_attempts + rng.normal(0, 1)))
+                ),
                 "reception_errors": max(0, int(round(1 + rng.normal(0, 0.8)))),
                 "reception_attempts": reception_attempts,
                 "reception_success_pct": 58.0 + float(rng.normal(0, 6)),

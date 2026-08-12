@@ -24,7 +24,9 @@ def create_app(model_dir: Path) -> Any:
     try:
         from fastapi import FastAPI, HTTPException
     except ImportError as exc:
-        raise RuntimeError('API dependencies are missing. Install with: pip install -e ".[api]"') from exc
+        raise RuntimeError(
+            'API dependencies are missing. Install with: pip install -e ".[api]"'
+        ) from exc
 
     engine = ForecastEngine(model_dir)
     app = FastAPI(

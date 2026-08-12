@@ -1,0 +1,224 @@
+Metadata-Version: 2.4
+Name: volleyball-athlete-forecasting
+Version: 0.1.0
+Summary: Athlete-specific volleyball stat forecasting with TensorFlow and Volleyball World data adapters.
+Author: Repository Maintainers
+License: MIT
+Project-URL: Documentation, https://github.com/your-org/volleyball-athlete-forecasting/tree/main/docs
+Project-URL: Repository, https://github.com/your-org/volleyball-athlete-forecasting
+Project-URL: Issues, https://github.com/your-org/volleyball-athlete-forecasting/issues
+Keywords: volleyball,tensorflow,time-series,sports-analytics,forecasting
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: <3.14,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: NOTICE
+Requires-Dist: beautifulsoup4<5,>=4.12
+Requires-Dist: httpx<1,>=0.27
+Requires-Dist: joblib<2,>=1.4
+Requires-Dist: lxml<7,>=5
+Requires-Dist: numpy<3,>=1.26
+Requires-Dist: pandas<3,>=2.2
+Requires-Dist: platformdirs<5,>=4.2
+Requires-Dist: pydantic<3,>=2.8
+Requires-Dist: pydantic-settings<3,>=2.4
+Requires-Dist: PyYAML<7,>=6
+Requires-Dist: rich<15,>=13.7
+Requires-Dist: scikit-learn<2,>=1.5
+Requires-Dist: typer<1,>=0.12
+Provides-Extra: ml
+Requires-Dist: tensorflow<2.22,>=2.18; extra == "ml"
+Provides-Extra: api
+Requires-Dist: fastapi<1,>=0.115; extra == "api"
+Requires-Dist: uvicorn[standard]<1,>=0.30; extra == "api"
+Provides-Extra: dev
+Requires-Dist: mypy<2,>=1.11; extra == "dev"
+Requires-Dist: pandas-stubs<3,>=2.2; extra == "dev"
+Requires-Dist: pre-commit<5,>=3.8; extra == "dev"
+Requires-Dist: pytest<10,>=8.3; extra == "dev"
+Requires-Dist: pytest-cov<8,>=5; extra == "dev"
+Requires-Dist: respx<1,>=0.21; extra == "dev"
+Requires-Dist: ruff<1,>=0.6; extra == "dev"
+Requires-Dist: types-PyYAML<7,>=6; extra == "dev"
+Dynamic: license-file
+
+# Volleyball Athlete Forecasting
+
+Athlete-specific, next-match stat forecasting with TensorFlow. The repository
+connects to Volleyball World's public competition and match routes, collects
+match-level athlete history from an authorized JSON endpoint or the public player
+page fallback, then predicts:
+
+- total points
+- attack points
+- block points
+- serve points
+
+The model is deliberately evaluated against simple last-value and rolling-mean
+baselines using chronological splits. A neural network is not treated as useful
+unless it beats those baselines on held-out future matches.
+
+> Independent research project. Not affiliated with Volleyball World or FIVB.
+> Review Volleyball World's current terms and obtain permission before commercial
+> use, high-volume collection, or redistribution of source data.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  VW[Volleyball World] -->|competitions / schedules / tournament API| C[Cached API client]
+  VW -->|authorized athlete JSON or public player page| I[Ingestion adapter]
+  C --> N[Canonical match table]
+  I --> N
+  N --> V[Validation and DNP policy]
+  V --> F[Leakage-safe features]
+  F --> B[Persistence and rolling baselines]
+  F --> T[TensorFlow LSTM + next-match context]
+  B --> E[Chronological evaluation]
+  T --> E
+  E --> A[Saved model, metrics, model card]
+  A --> P[CLI or FastAPI forecast]
+```
+
+## Observed source routes
+
+The client includes these configurable routes under
+`https://en.volleyballworld.com`:
+
+```text
+GET /api/v1/globalschedule/competitions/{year}/{month}
+GET /api/v1/globalschedule/{start_date}/{end_date}
+GET /api/v1/volley-tournament/{start_date}/{end_date}/{tournament_no}
+GET /volleyball/competitions/{competition_slug}/{season}/players/{player_id}
+```
+
+The first three return competition or match context. The last route is the
+server-rendered player profile used only when no authorized athlete JSON endpoint
+has been configured. These interfaces are undocumented and can change; all access
+is isolated behind `VolleyballWorldClient` and parser tests.
+
+## Quick start
+
+Python 3.11 is recommended.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[ml,api,dev]"
+cp .env.example .env
+```
+
+Inspect competitions:
+
+```bash
+volley-forecast discover-competitions --year 2025 --month 6
+```
+
+Create `config/athlete.local.yaml` from the example, then ingest multiple seasons:
+
+```bash
+volley-forecast ingest-player \
+  --config config/athlete.local.yaml \
+  --output data/processed/athlete_matches.csv \
+  --raw-dir data/raw
+```
+
+Analyze athlete form before modelling:
+
+```bash
+volley-forecast analyze \
+  --data data/processed/athlete_matches.csv \
+  --recent-window 5
+```
+
+Train and evaluate:
+
+```bash
+volley-forecast train \
+  --data data/processed/athlete_matches.csv \
+  --model-dir artifacts/athlete \
+  --config config/model.example.yaml
+```
+
+Forecast the next match:
+
+```bash
+volley-forecast forecast \
+  --model-dir artifacts/athlete \
+  --history data/processed/athlete_matches.csv \
+  --next-date 2026-08-20 \
+  --opponent Italy
+```
+
+Serve the same model over HTTP:
+
+```bash
+volley-forecast serve --model-dir artifacts/athlete --port 8000
+```
+
+## Run without live data
+
+The committed CSV is synthetic and exists only to exercise the pipeline:
+
+```bash
+volley-forecast train \
+  --data data/sample/demo_athlete_matches.csv \
+  --model-dir artifacts/demo \
+  --config config/model.example.yaml
+```
+
+## Why this design
+
+- **Athlete-specific:** each model learns one athlete's form, workload, rest, and
+  opponent-history effects rather than averaging unlike roles.
+- **No random split:** validation and test samples occur after training samples.
+- **Known next-match context:** rest days, season timing, and prior performance
+  against the named opponent enter a separate context branch.
+- **Small-data controls:** early stopping, compact networks, baselines, minimum
+  sample checks, and explicit promotion status.
+- **Uncertainty:** Monte Carlo dropout produces configurable lower and upper bands.
+- **Replaceable ingestion:** site changes are limited to client or parser adapters.
+
+## Repository layout
+
+```text
+src/volley_forecast/   client, parser, analysis, features, model, training, inference, API
+config/                athlete, JSON-mapping, and model examples
+data/sample/           synthetic demonstration data only
+docs/                  architecture, contract, model card, API notes, roadmap
+tests/                 offline fixtures and unit tests
+.github/workflows/     core CI and opt-in TensorFlow smoke test
+```
+
+## Minimum data guidance
+
+The code can run with 20 participating matches, but that is a technical floor,
+not a quality guarantee. Prefer several seasons and at least 40-60 appearances.
+Keep role, competition level, and scoring rules reasonably consistent. Model
+quality should be judged by held-out MAE per target and by lift over baselines.
+
+## Documentation
+
+- [API and source notes](docs/api_research.md)
+- [Athlete analysis](docs/athlete_analysis.md)
+- [Canonical data contract](docs/data_contract.md)
+- [System architecture](docs/architecture.md)
+- [Model card](docs/model_card.md)
+- [Roadmap](docs/roadmap.md)
+- [Verification status](docs/verification.md)
+
+## Reference material
+
+- TensorFlow time-series forecasting tutorial: https://www.tensorflow.org/tutorials/structured_data/time_series
+- TensorFlow installation guidance: https://www.tensorflow.org/install/pip
+- Volleyball World player-page pattern: https://en.volleyballworld.com/volleyball/competitions/volleyball-nations-league/2025/players/163098
+- Volleyball World terms: https://en.volleyballworld.com/terms-of-use

@@ -1,0 +1,2 @@
+[console_scripts]
+volley-forecast = volley_forecast.cli:app

@@ -7,7 +7,11 @@ from volley_forecast.baselines import last_value_predictions, rolling_mean_predi
 from volley_forecast.dataset import chronological_split, make_sequences
 from volley_forecast.features import engineer_features
 from volley_forecast.metrics import evaluate_regression
-from volley_forecast.schema import DEFAULT_CONTEXT_FEATURES, DEFAULT_HISTORY_FEATURES, TARGET_COLUMNS
+from volley_forecast.schema import (
+    DEFAULT_CONTEXT_FEATURES,
+    DEFAULT_HISTORY_FEATURES,
+    TARGET_COLUMNS,
+)
 
 
 def test_sequence_shapes_and_chronological_split(demo_frame) -> None:
